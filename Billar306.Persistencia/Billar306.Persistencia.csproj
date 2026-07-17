@@ -10,4 +10,8 @@
     <Folder Include="Migrations\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Billar306.Data\Billar306.Data.csproj" />
+  </ItemGroup>
+
 </Project>

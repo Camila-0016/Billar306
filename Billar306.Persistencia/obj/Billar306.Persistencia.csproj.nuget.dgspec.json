@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\proyectos2\\Billar306.Persistencia\\Billar306.Persistencia.csproj": {}
+    "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Persistencia\\Billar306.Persistencia.csproj": {}
   },
   "projects": {
-    "C:\\proyectos2\\Billar306.Persistencia\\Billar306.Persistencia.csproj": {
+    "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\proyectos2\\Billar306.Persistencia\\Billar306.Persistencia.csproj",
-        "projectName": "Billar306.Persistencia",
-        "projectPath": "C:\\proyectos2\\Billar306.Persistencia\\Billar306.Persistencia.csproj",
-        "packagesPath": "C:\\Users\\camil\\.nuget\\packages\\",
-        "outputPath": "C:\\proyectos2\\Billar306.Persistencia\\obj\\",
+        "projectUniqueName": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj",
+        "projectName": "Billar306.Data",
+        "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj",
+        "packagesPath": "C:\\Users\\cendo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\camil\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\cendo\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -30,6 +30,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -44,10 +45,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -65,7 +67,78 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Persistencia\\Billar306.Persistencia.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Persistencia\\Billar306.Persistencia.csproj",
+        "projectName": "Billar306.Persistencia",
+        "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Persistencia\\Billar306.Persistencia.csproj",
+        "packagesPath": "C:\\Users\\cendo\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Persistencia\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\cendo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj": {
+                "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

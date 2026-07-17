@@ -23,7 +23,7 @@ namespace Billar306.API.Services
             _eventoService = eventoService;
         }
 
-        public async Task<List<Anticipo>> ObtenerTodosAsync()
+        public async Task<List<T>> ObtenerTodosAsync()
             => await _anticipoRepo.ObtenerTodosAsync();
 
         public async Task<List<Anticipo>> ObtenerPorEmpleadoAsync(int empleadoId)
