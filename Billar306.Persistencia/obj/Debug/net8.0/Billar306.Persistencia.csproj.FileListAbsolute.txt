@@ -1,0 +1,11 @@
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\bin\Debug\net8.0\Billar306.Persistencia.deps.json
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\bin\Debug\net8.0\Billar306.Persistencia.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\bin\Debug\net8.0\Billar306.Persistencia.pdb
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.AssemblyInfoInputs.cache
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.AssemblyInfo.cs
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.csproj.CoreCompileInputs.cache
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\refint\Billar306.Persistencia.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\Billar306.Persistencia.pdb
+C:\Users\camil\Downloads\Billar306-master\Billar306.Persistencia\obj\Debug\net8.0\ref\Billar306.Persistencia.dll

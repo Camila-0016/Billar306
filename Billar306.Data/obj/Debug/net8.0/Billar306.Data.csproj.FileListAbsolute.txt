@@ -1,0 +1,4 @@
+C:\Users\camil\Downloads\Billar306-master\Billar306.Data\obj\Debug\net8.0\Billar306.Data.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\camil\Downloads\Billar306-master\Billar306.Data\obj\Debug\net8.0\Billar306.Data.AssemblyInfoInputs.cache
+C:\Users\camil\Downloads\Billar306-master\Billar306.Data\obj\Debug\net8.0\Billar306.Data.AssemblyInfo.cs
+C:\Users\camil\Downloads\Billar306-master\Billar306.Data\obj\Debug\net8.0\Billar306.Data.csproj.CoreCompileInputs.cache
