@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Billar306.Aplicacion/1.0.0": {
+        "runtime": {
+          "Billar306.Aplicacion.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Billar306.Aplicacion/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

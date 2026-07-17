@@ -1,0 +1,11 @@
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\bin\Debug\net8.0\Billar306.Aplicacion.deps.json
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\bin\Debug\net8.0\Billar306.Aplicacion.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\bin\Debug\net8.0\Billar306.Aplicacion.pdb
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.AssemblyInfoInputs.cache
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.AssemblyInfo.cs
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.csproj.CoreCompileInputs.cache
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\refint\Billar306.Aplicacion.dll
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\Billar306.Aplicacion.pdb
+C:\Users\camil\Downloads\Billar306-master\Billar306.Aplication\obj\Debug\net8.0\ref\Billar306.Aplicacion.dll
