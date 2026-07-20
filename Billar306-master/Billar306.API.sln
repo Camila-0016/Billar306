@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12009.203 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billar306.API", "Billar306.API.csproj", "{FD2EAFC3-51EC-457A-8BD6-EE613DE62F61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billar306.Data", "..\Billar306.Data\Billar306.Data.csproj", "{34ADDE76-A3C2-4FD8-A6F1-4721FE102EAB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billar306.Dominio", "..\Billar306.Data\Billar306.Dominio.csproj", "{34ADDE76-A3C2-4FD8-A6F1-4721FE102EAB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billar306.Persistencia", "..\Billar306.Persistencia\Billar306.Persistencia.csproj", "{E2F853BB-D7F4-4CD8-A318-2273526A31AD}"
 EndProject

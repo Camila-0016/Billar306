@@ -33,8 +33,8 @@
             "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj": {
-                "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj"
+              "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Dominio.csproj": {
+                "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Dominio.csproj"
               }
             }
           }
@@ -75,12 +75,12 @@
         }
       }
     },
-    "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj": {
+    "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Dominio.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj",
-        "projectName": "Billar306.Data",
-        "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Data.csproj",
+        "projectUniqueName": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Dominio.csproj",
+        "projectName": "Billar306.Dominio",
+        "projectPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\Billar306.Dominio.csproj",
         "packagesPath": "C:\\Users\\cendo\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\cendo\\source\\repos\\Billar306\\Billar306.Data\\obj\\",
         "projectStyle": "PackageReference",

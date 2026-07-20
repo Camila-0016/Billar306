@@ -19,8 +19,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Billar306.Aplication\Billar306.Aplicacion.csproj" />
-    <ProjectReference Include="..\Billar306.Data\Billar306.Data.csproj" />
+    <ProjectReference Include="..\Billar306.Data\Billar306.Dominio.csproj" />
     <ProjectReference Include="..\Billar306.Persistencia\Billar306.Persistencia.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

@@ -1,8 +1,6 @@
 using Billar306.API.Configuration;
 using Billar306.API.Data;
 using Billar306.API.Middleware;
-using Billar306.API.Repositories;
-using Billar306.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -16,16 +14,21 @@ namespace Billar306.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //CORS 
+            // 1. REGISTROS CRÍTICOS FALTANTES
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+
+            // CORS 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("FrontendPolicy", policy =>
                 {
                     policy
                         .WithOrigins(
-                            "http://localhost:3000",   // React / Node
-                            "http://localhost:5500",   // Live Server de VS Code
-                            "http://127.0.0.1:5500"   // Live Server alternativo
+                            "http://localhost:3000",
+                            "http://localhost:5500",
+                            "http://127.0.0.1:5500"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod();
@@ -54,60 +57,8 @@ namespace Billar306.API
                 });
 
             // Repositories
-            builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            builder.Services.AddScoped<IMesaRepository, MesaRepository>();
-            builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
-            builder.Services.AddScoped<ISesionMesaRepository, SesionMesaRepository>();
-            builder.Services.AddScoped<IConfiguracionRepository, ConfiguracionRepository>();
-            builder.Services.AddScoped<IFiadoRepository, FiadoRepository>();
-            builder.Services.AddScoped<IAnticipoRepository, AnticipoRepository>();
-            builder.Services.AddScoped<IClienteFrecuenteRepository, ClienteFrecuenteRepository>();
-            builder.Services.AddScoped<IItemConfiteriaRepository, ItemConfiteriaRepository>();
-            builder.Services.AddScoped<IEventoTurnoRepository, EventoTurnoRepository>();
-            builder.Services.AddScoped<IIngresoStockRepository, IngresoStockRepository>();
-            builder.Services.AddScoped<IRegistroHoraRepository, RegistroHoraRepository>();
 
             // Services
-            builder.Services.AddScoped<AuthService>();
-            builder.Services.AddScoped<MesaService>();
-            builder.Services.AddScoped<TurnoService>();
-            builder.Services.AddScoped<UsuarioService>();
-            builder.Services.AddScoped<FiadoService>();
-            builder.Services.AddScoped<AnticipoService>();
-            builder.Services.AddScoped<ClienteFrecuenteService>();
-            builder.Services.AddScoped<ConfiteriaService>();
-            builder.Services.AddScoped<EventoService>();
-            builder.Services.AddScoped<LiquidacionService>();
-            builder.Services.AddScoped<IVentaDirectaRepository, VentaDirectaRepository>();
-            builder.Services.AddScoped<IAbonoFiadoRepository, AbonoFiadoRepository>();
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(c =>
-            {
-                c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-                    Description = "Ingresá el token así: Bearer {tu token}"
-                });
-                c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-                {
-                    {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                        {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                            {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
-            });
 
             var app = builder.Build();
 
@@ -134,6 +85,7 @@ namespace Billar306.API
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+
             app.Run();
         }
     }
