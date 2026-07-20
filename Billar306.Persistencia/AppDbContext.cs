@@ -1,10 +1,15 @@
-﻿using Billar306.Data.Models.Clientes;
-using Billar306.Data.Models.Control;
-using Billar306.Data.Models.Empleado;
-using Billar306.Data.Models.Operatividad;
-using Billar306.Data.Models.Venta;
-using Billar306.Data.Models.Venta.Mesa;
+﻿using Billar306.Dominio.Models;
+using Billar306.Dominio.Models.Clientes;
+using Billar306.Dominio.Models.Control;
+using Billar306.Dominio.Models.Empleado;
+using Billar306.Dominio.Models.Operatividad;
+using Billar306.Dominio.Models.Venta;
+using Billar306.Dominio.Models.Venta.Maquina;
+using Billar306.Dominio.Models.Venta.Mesas;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Billar306.API.Data
 {
@@ -13,170 +18,64 @@ namespace Billar306.API.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         // Tablas
+        // 1. Usuarios y Clientes
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<ConfiguracionSistema> ConfiguracionesSistema { get; set; }
+
+        // 2. Catálogo y Productos
+        public DbSet<Catalogo> Catalogos { get; set; }
+        public DbSet<Producto> Productos { get; set; }
+
+        // 3. Mesas y Máquinas
         public DbSet<Mesa> Mesas { get; set; }
-        public DbSet<Turno> Turnos { get; set; }
+        public DbSet<Maquina> Maquinas { get; set; }
+
+        // 4. Cuentas y Sesiones (TPT)
+        public DbSet<CuentaBase> Cuentas { get; set; }
         public DbSet<SesionMesa> SesionesMesa { get; set; }
+        public DbSet<SesionMaquina> SesionesMaquina { get; set; }
+        public DbSet<TransaccionMaquina> TransaccionesMaquina { get; set; }
+
+        // 5. Confitería y Stock
+        public DbSet<VentaConfiteria> VentasConfiteria { get; set; }
         public DbSet<ItemConfiteria> ItemsConfiteria { get; set; }
-        public DbSet<ConsumicionMesa> ConsumicionesMesa { get; set; }
-        public DbSet<ClienteFrecuente> ClientesFrecuentes { get; set; }
-        public DbSet<Fiado> Fiados { get; set; }
-        public DbSet<Anticipo> Anticipos { get; set; }
-        public DbSet<EventoTurno> EventosTurno { get; set; }
-        public DbSet<ConfiguracionSistema> ConfiguracionSistema { get; set; }
-        public DbSet<RegistroHoraEmpleado> RegistrosHora { get; set; }
         public DbSet<IngresoStock> IngresosStock { get; set; }
-        public DbSet<VentaDirecta> VentasDirectas { get; set; }
-        public DbSet<AbonoFiado> AbonosFiado { get; set; }
+        public DbSet<ItemIngresoStock> ItemsIngresoStock { get; set; }
+
+        // 6. Operatividad y Caja
+        public DbSet<Pago> Pagos { get; set; }
+        public DbSet<Turno> Turnos { get; set; }
+        public DbSet<DiaLaboral> DiasLaborales { get; set; }
+        public DbSet<EventoTurno> EventosTurno { get; set; }
+        public DbSet<Anticipo> Anticipos { get; set; }
+
+        // 7. Deudas y Cobros
+        public DbSet<Prenda> Prendas { get; set; }
+        public DbSet<CobroDeuda> CobrosDeudas { get; set; }
+
+        // 8. Recursos Humanos
+        public DbSet<RegistroTurnoEmpleado> RegistrosTurnoEmpleado { get; set; }
+        public DbSet<Amonestacion> Amonestaciones { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // --- Usuario ---
-            modelBuilder.Entity<Usuario>()
-                .HasIndex(u => u.NombreUsuario)
-                .IsUnique();
 
-            // --- Anticipo: dos FK a Usuario, hay que decirle a EF cuál es cuál ---
-            modelBuilder.Entity<Anticipo>()
-                .HasOne(a => a.Empleado)
-                .WithMany(u => u.Anticipos)
-                .HasForeignKey(a => a.EmpleadoId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Anticipo>()
-                .HasOne(a => a.UsuarioAutorizante)
-                .WithMany()
-                .HasForeignKey(a => a.UsuarioAutorizanteId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // --- SesionMesa: FK a Usuario ---
-            modelBuilder.Entity<SesionMesa>()
-                .HasOne(s => s.Usuario)
-                .WithMany()
-                .HasForeignKey(s => s.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // --- Fiado: FK a Usuario (registro) ---
-            modelBuilder.Entity<Fiado>()
-                .HasOne(f => f.UsuarioRegistro)
-                .WithMany()
-                .HasForeignKey(f => f.UsuarioRegistroId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // --- Fiado relacion con SesionMesa---
-            modelBuilder.Entity<Fiado>()
-                .HasOne(f => f.SesionMesa)
-                .WithOne(s => s.Fiado)
-                .HasForeignKey<Fiado>(f => f.SesionMesaId)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            //Abono de fiado
-            modelBuilder.Entity<AbonoFiado>()
-    .HasOne(a => a.Fiado)
-    .WithMany(f => f.Abonos)
-    .HasForeignKey(a => a.FiadoId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<AbonoFiado>()
-                .HasOne(a => a.Usuario)
-                .WithMany()
-                .HasForeignKey(a => a.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Ingreso durante el turno
-            modelBuilder.Entity<IngresoStock>()
-    .HasOne(i => i.Usuario)
-    .WithMany()
-    .HasForeignKey(i => i.UsuarioId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<IngresoStock>()
-                .HasOne(i => i.Turno)
-                .WithMany()
-                .HasForeignKey(i => i.TurnoId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            //Horas empleado
-            modelBuilder.Entity<RegistroHoraEmpleado>()
-    .HasOne(r => r.Usuario)
-    .WithMany()
-    .HasForeignKey(r => r.UsuarioId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RegistroHoraEmpleado>()
-                .HasOne(r => r.Turno)
-                .WithMany()
-                .HasForeignKey(r => r.TurnoId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            //Venta Confiteria
-            modelBuilder.Entity<VentaDirecta>()
-    .HasOne(v => v.Usuario)
-    .WithMany()
-    .HasForeignKey(v => v.UsuarioId)
-    .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<VentaDirecta>()
-                .HasOne(v => v.Turno)
-                .WithMany()
-                .HasForeignKey(v => v.TurnoId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // --- EventoTurno: FK a Usuario ---
-            modelBuilder.Entity<EventoTurno>()
-                .HasOne(e => e.Usuario)
-                .WithMany()
-                .HasForeignKey(e => e.UsuarioId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // --- ConfiguracionSistema: clave única ---
-            modelBuilder.Entity<ConfiguracionSistema>()
-                .HasIndex(c => c.Clave)
-                .IsUnique();
-
-            // --- Datos iniciales: Mesas ---
-            modelBuilder.Entity<Mesa>().HasData(
-                Enumerable.Range(1, 8).Select(i => new Mesa
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        }
+            // Protección de campos inmutables (Auditoría)
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<EntidadBase>())
+            {
+                if (entry.State == EntityState.Modified)
                 {
-                    Id = i,
-                    Numero = i,
-                    Estado = "Libre"
-                }).ToArray()
-            );
-
-            // --- Datos iniciales: Configuración ---
-            modelBuilder.Entity<ConfiguracionSistema>().HasData(
-                new ConfiguracionSistema { Id = 1, Clave = "LimiteAnticipoPorc", Valor = "40", Descripcion = "Porcentaje máximo de anticipo sobre sueldo" },
-                new ConfiguracionSistema { Id = 2, Clave = "MontoMaxGravedadBaja", Valor = "2000", Descripcion = "Diferencia de caja máxima para gravedad baja" },
-                new ConfiguracionSistema { Id = 3, Clave = "PeriodoRedondeo", Valor = "30", Descripcion = "Días del período de redondeo a favor del cliente" },
-                new ConfiguracionSistema { Id = 4, Clave = "PausaMinimaJuegoMin", Valor = "30", Descripcion = "Minutos mínimos entre sesiones de juego del mismo empleado" },
-                new ConfiguracionSistema { Id = 5, Clave = "ModalidadJuego", Valor = "consumicion", Descripcion = "Modalidad de juego: tiempo | consumicion | ambas" },
-                new ConfiguracionSistema { Id = 6, Clave = "DuracionTokenHoras", Valor = "8", Descripcion = "Horas de validez del token JWT" },
-                new ConfiguracionSistema { Id = 7, Clave = "TarifaHoraEmpleado", Valor = "0", Descripcion = "Tarifa por hora para empleados" },
-                new ConfiguracionSistema { Id = 8, Clave = "TarifaHoraEncargado", Valor = "0", Descripcion = "Tarifa por hora para encargados" },
-                new ConfiguracionSistema { Id = 9, Clave = "TarifaHoraMesa", Valor = "0", Descripcion = "Precio por hora de mesa" },
-new ConfiguracionSistema { Id = 10, Clave = "RecargoPorcentajeNocturno", Valor = "50", Descripcion = "Porcentaje de recargo nocturno (después de las 6am)" },
-new ConfiguracionSistema { Id = 11, Clave = "HoraInicioRecargo", Valor = "6", Descripcion = "Hora desde la que aplica el recargo (formato 24h)" },
-new ConfiguracionSistema { Id = 12, Clave = "HoraFinRecargo", Valor = "14", Descripcion = "Hora hasta la que aplica el recargo (formato 24h)" }
-                );
-
-
-            // --- Datos iniciales: Usuario jefe por defecto ---
-            modelBuilder.Entity<Usuario>().HasData(
-                new Usuario
-                {
-                    Id = 1,
-                    NombreUsuario = "jefe",
-                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin1234"),
-                    Rol = "jefe",
-                    NombreCompleto = "Administrador",
-                    SueldoBase = 0,
-                    Activo = true,
-                    FechaCreacion = new DateTime(2026, 1, 1)
+                    // Evita que la FechaInicio sea alterada en un UPDATE
+                    entry.Property(x => x.FechaInicio).IsModified = false;
                 }
-            );
+            }
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Billar306.Persistencia")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a933636b291c962954282e76b0b3afde5d15752")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0a7760317fcd4f76b16f0d4aa407c9ae94172a7b")]
 [assembly: System.Reflection.AssemblyProductAttribute("Billar306.Persistencia")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Billar306.Persistencia")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
