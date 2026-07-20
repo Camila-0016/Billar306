@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Billar306.Data.Models.Control
+namespace Billar306.Dominio.Models.Control
 {
     public enum TipoParametro
     {

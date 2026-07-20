@@ -1,0 +1,72 @@
+﻿using Billar306.Dominio.Models.Clientes;
+using Billar306.Dominio.Models.Control;
+using Billar306.Dominio.Models.Empleado;
+using Billar306.Dominio.Models.Operatividad;
+using Billar306.Dominio.Models.Venta;
+using Billar306.Dominio.Models.Venta.Mesas;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+
+namespace Billar306.API.Data
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+
+        // Tablas
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<ConfiguracionSistema> ConfiguracionesSistema { get; set; }
+        public DbSet<Mesa> Mesas { get; set; }
+        public 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+            
+            // --- Datos iniciales: Mesas ---
+            modelBuilder.Entity<Mesa>().HasData(
+                Enumerable.Range(1, 8).Select(i => new Mesa
+                {
+                    Id = i,
+                    Numero = i,
+                    Ocupada = false,
+                }).ToArray()
+            );
+
+            // --- Datos iniciales: Configuración ---
+            modelBuilder.Entity<ConfiguracionSistema>().HasData(
+                new ConfiguracionSistema { Id = 1, Clave = "LimiteAnticipoPorc", Valor = "40", Descripcion = "Porcentaje máximo de anticipo sobre sueldo" },
+                new ConfiguracionSistema { Id = 2, Clave = "MontoMaxGravedadBaja", Valor = "2000", Descripcion = "Diferencia de caja máxima para gravedad baja" },
+                new ConfiguracionSistema { Id = 3, Clave = "PeriodoRedondeo", Valor = "30", Descripcion = "Días del período de redondeo a favor del cliente" },
+                new ConfiguracionSistema { Id = 4, Clave = "PausaMinimaJuegoMin", Valor = "30", Descripcion = "Minutos mínimos entre sesiones de juego del mismo empleado" },
+                new ConfiguracionSistema { Id = 5, Clave = "ModalidadJuego", Valor = "consumicion", Descripcion = "Modalidad de juego: tiempo | consumicion | ambas" },
+                new ConfiguracionSistema { Id = 6, Clave = "DuracionTokenHoras", Valor = "8", Descripcion = "Horas de validez del token JWT" },
+                new ConfiguracionSistema { Id = 7, Clave = "TarifaHoraEmpleado", Valor = "0", Descripcion = "Tarifa por hora para empleados" },
+                new ConfiguracionSistema { Id = 8, Clave = "TarifaHoraEncargado", Valor = "0", Descripcion = "Tarifa por hora para encargados" },
+                new ConfiguracionSistema { Id = 9, Clave = "TarifaHoraMesa", Valor = "0", Descripcion = "Precio por hora de mesa" },
+                new ConfiguracionSistema { Id = 10, Clave = "RecargoPorcentajeNocturno", Valor = "50", Descripcion = "Porcentaje de recargo nocturno (después de las 6am)" },
+                new ConfiguracionSistema { Id = 11, Clave = "HoraInicioRecargo", Valor = "6", Descripcion = "Hora desde la que aplica el recargo (formato 24h)" },
+                new ConfiguracionSistema { Id = 12, Clave = "HoraFinRecargo", Valor = "14", Descripcion = "Hora hasta la que aplica el recargo (formato 24h)" }
+                );
+
+
+            // --- Datos iniciales: Usuario jefe por defecto ---
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario
+                {
+                    Id = 1,
+                    NombreUsuario = "jefe",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin1234"),
+                    Rol = 1,
+                    NombreCompleto = "Administrador",
+                    SueldoBase = 0,
+                    Activo = true,
+                    FechaCreacion = new DateTime(2026, 1, 1)
+                }
+            );
+        }
+    }
+}

@@ -1,7 +1,7 @@
-﻿using Billar306.Data.Models.Control;
-using Billar306.Data.Models.Operatividad;
+﻿using Billar306.Dominio.Models.Control;
+using Billar306.Dominio.Models.Operatividad;
 
-namespace Billar306.Data.Models.Empleado
+namespace Billar306.Dominio.Models.Empleado
 {
     public class Anticipo: EntidadBase
     {
@@ -13,5 +13,6 @@ namespace Billar306.Data.Models.Empleado
         // Navegación
         public Usuario Empleado { get; set; } = null!;
         public Usuario UsuarioAutorizante { get; set; } = null!;
+        public Turno Turno { get; set; } = null!;
     }
 }

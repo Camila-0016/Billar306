@@ -1,6 +1,7 @@
-﻿using Billar306.Data.Models.Control;
+﻿using Billar306.Dominio.Models;
+using Billar306.Dominio.Models.Control;
 
-namespace Billar306.Data.Models.Clientes
+namespace Billar306.Dominio.Models.Clientes
 {
     public class CobroDeuda : EntidadBase
     {

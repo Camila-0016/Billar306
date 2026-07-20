@@ -1,8 +1,6 @@
-﻿using Billar306.Data.Models.Empleado;
-using Billar306.Data.Models.Operatividad;
-using Billar306.Data.Models.Venta;
+﻿using Billar306.Dominio.Models.Operatividad;
 
-namespace Billar306.Data.Models.Control
+namespace Billar306.Dominio.Models.Control
 {
     public class IngresoStock : EntidadBase
     {
@@ -12,7 +10,7 @@ namespace Billar306.Data.Models.Control
 
         // Navegación
         public Turno TurnoEmpleado { get; set; } = null!;
-        public ICollection<Producto> Productos { get; set; } = new List<Producto>();
+        public ICollection<ItemIngresoStock> Productos { get; set; } = new List<ItemIngresoStock>();
         public Usuario Empleado { get; set; } = null!;
     }
 }

@@ -1,0 +1,20 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Billar306.Persistencia.Configurations
+{
+    public class MesaConfiguration : IEntityTypeConfiguration<Domain.Models.Venta.Mesas.Mesa>
+    {
+        public void configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Domain.Models.Venta.Mesas.Mesa> builder)
+        {
+            builder.HasKey(m => m.Id);
+            builder.Property(m => m.Numero).IsRequired();
+            builder.Property(m => m.Estado).IsRequired();
+            builder.Property(m => m.FechaCreacion).IsRequired();
+            builder.Property(m => m.FechaModificacion).IsRequired();
+        }
+}

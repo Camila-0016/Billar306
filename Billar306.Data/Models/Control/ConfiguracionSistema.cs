@@ -1,4 +1,6 @@
-﻿namespace Billar306.Data.Models.Control
+﻿using Billar306.Dominio.Models;
+
+namespace Billar306.Dominio.Models.Control
 {
     public class ConfiguracionSistema : EntidadBase
     {

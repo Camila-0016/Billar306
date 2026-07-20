@@ -1,7 +1,6 @@
-﻿using Billar306.Data.Models.Venta;
-using Billar306.Data.Models.Venta.Mesa;
+﻿using Billar306.Dominio.Models.Venta;
 
-namespace Billar306.Data.Models.Clientes
+namespace Billar306.Dominio.Models.Clientes
 {
     public class Cliente : EntidadBase
     {
@@ -9,8 +8,5 @@ namespace Billar306.Data.Models.Clientes
         public bool CreditoHabilitado { get; set; } = false;
         public decimal MontoCredito { get; set; } 
 
-        // Navegación
-        public ICollection<CuentaBase> Cuentas { get; set; } = new List<CuentaBase>();
-        public ICollection<Prenda> Prendas { get; set; } = new List<Prenda>();
     }
 }

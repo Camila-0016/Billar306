@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Billar306.Data.Models.Venta
+namespace Billar306.Dominio.Models.Venta
 {
     public enum FormaPago
     {
-        Efectivo,
-        Transferencia,
-        Credito
+        Efectivo = 1,
+        Transferencia = 2,
+        Credito = 3
     }
 }

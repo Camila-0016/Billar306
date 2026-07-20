@@ -1,0 +1,19 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Billar306.Dominio.Models.Venta.Mesas;
+
+namespace Billar306.Persistencia.Configurations
+{
+    public class MesaConfiguration : IEntityTypeConfiguration<Mesa>
+    {
+        public void Configure(EntityTypeBuilder<Mesa> builder)
+        {
+            builder.HasKey(m => m.Id);
+            builder.Property(m => m.Numero).IsRequired();
+            builder.Property(m => m.Ocupada).IsRequired();
+            builder.Property(m => m.Activo).IsRequired();
+            builder.Property(m => m.FechaInicio).IsRequired();
+            builder.HasMany(m => m.Sesiones).WithOne(s => s.Mesa).HasForeignKey(s => s.MesaId).OnDelete(DeleteBehavior.Restrict);
+        }           
+    }
+}
