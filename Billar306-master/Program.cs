@@ -4,6 +4,9 @@ using Billar306.API.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Billar306.Aplicacion.Services;
+using Billar306.Dominio.Interfaces;
+using Billar306.Persistencia.Repositories;
 using System.Text;
 
 namespace Billar306.API
@@ -57,8 +60,11 @@ namespace Billar306.API
                 });
 
             // Repositories
+            builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+
 
             // Services
+            builder.Services.AddScoped<ClienteService>();
 
             var app = builder.Build();
 
