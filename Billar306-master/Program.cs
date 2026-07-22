@@ -62,10 +62,15 @@ namespace Billar306.API
             // Repositories
             builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
             builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            builder.Services.AddScoped<IDiaLaboralRepository, DiaLaboralRepository>();
+            builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
+            builder.Services.AddScoped<IRegistroTurnoEmpleadoRepository, RegistroTurnoEmpleadoRepository>();
 
             // Services
             builder.Services.AddScoped<ClienteService>();
             builder.Services.AddScoped<UsuarioService>();
+            builder.Services.AddScoped<DiaLaboralService>();
+            builder.Services.AddScoped<TurnoService>();
 
             var app = builder.Build();
 
