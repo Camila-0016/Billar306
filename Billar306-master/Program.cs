@@ -8,6 +8,7 @@ using Billar306.Aplicacion.Services;
 using Billar306.Dominio.Interfaces;
 using Billar306.Persistencia.Repositories;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Billar306.API
 {
@@ -18,7 +19,11 @@ namespace Billar306.API
             var builder = WebApplication.CreateBuilder(args);
 
             // 1. REGISTROS CRÍTICOS FALTANTES
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -65,12 +70,18 @@ namespace Billar306.API
             builder.Services.AddScoped<IDiaLaboralRepository, DiaLaboralRepository>();
             builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
             builder.Services.AddScoped<IRegistroTurnoEmpleadoRepository, RegistroTurnoEmpleadoRepository>();
+            builder.Services.AddScoped<IMesaRepository, MesaRepository>();
+            builder.Services.AddScoped<ISesionMesaRepository, SesionMesaRepository>();
+            builder.Services.AddScoped<IConfiguracionSistemaRepository, ConfiguracionSistemaRepository>();
 
             // Services
             builder.Services.AddScoped<ClienteService>();
             builder.Services.AddScoped<UsuarioService>();
             builder.Services.AddScoped<DiaLaboralService>();
             builder.Services.AddScoped<TurnoService>();
+            builder.Services.AddScoped<MesaService>();
+            builder.Services.AddScoped<SesionMesaService>();
+            builder.Services.AddScoped<ConfiguracionSistemaService>();
 
             var app = builder.Build();
 

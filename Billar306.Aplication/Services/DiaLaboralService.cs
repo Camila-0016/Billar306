@@ -1,4 +1,4 @@
-﻿// DiaLaboralService.cs
+﻿
 using Billar306.Aplicacion.DTOs.Turnos;
 using Billar306.Dominio.Interfaces;
 using Billar306.Dominio.Models.Operatividad;
