@@ -9,6 +9,7 @@ using Billar306.Dominio.Interfaces;
 using Billar306.Persistencia.Repositories;
 using System.Text;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 namespace Billar306.API
 {
@@ -25,7 +26,33 @@ namespace Billar306.API
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "Autenticación JWT usando el esquema Bearer. \r\n\r\n Escribe 'Bearer' [espacio] y luego tu token.\r\n\r\nEjemplo: \"Bearer eyJhbGciOiJIUzI1Ni...\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+            });
 
             // CORS 
             builder.Services.AddCors(options =>
@@ -90,6 +117,7 @@ namespace Billar306.API
             builder.Services.AddScoped<CatalogoService>();
             builder.Services.AddScoped<ProductoService>();
             builder.Services.AddScoped<ConfiteriaService>();
+            builder.Services.AddScoped<AuthService>();
 
             var app = builder.Build();
 
