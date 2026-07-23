@@ -84,7 +84,7 @@ namespace Billar306.Aplicacion.Services
             mesa.Ocupada = true;
             await _mesaRepository.ActualizarAsync(mesa);
 
-            return (true, null, false, MapearADto(sesion));
+            return (true, null, false, await MapearADtoAsync(sesion));
         }
 
         public async Task<(bool Exito, string? Error, bool NoEncontrado)> CerrarAsync(int sesionId, CerrarSesionMesaDto dto)
@@ -93,8 +93,11 @@ namespace Billar306.Aplicacion.Services
             if (sesion is null) return (false, "Sesión no encontrada.", true);
             if (sesion.FechaFin is not null) return (false, "La sesión ya está cerrada.", false);
 
-            if (await _registroRepository.ObtenerAbiertoAsync(sesion.TurnoId, dto.EmpleadoCierreId) is null)
-                return (false, "El empleado indicado no está activo en el turno de esta sesión.", false);
+            var turnoActual = await _turnoRepository.ObtenerTurnoAbiertoAsync();
+            if (turnoActual is null) return (false, "No hay un turno abierto.", false);
+
+            if (await _registroRepository.ObtenerAbiertoAsync(turnoActual.Id, dto.EmpleadoCierreId) is null)
+                return (false, "El empleado indicado no está activo en el turno actual.", false);
 
             var tarifa = await _configRepository.ObtenerPorClaveAsync(TipoParametro.TarifaHoraMesa);
             if (tarifa is null)
@@ -106,7 +109,7 @@ namespace Billar306.Aplicacion.Services
 
             sesion.FechaFin = ahora;
             sesion.MontoSesionMesa = monto;
-            sesion.Total = monto; // Provisorio — se recalcula cuando exista confitería asociada
+            sesion.Total = monto; 
             sesion.EmpleadoCierreId = dto.EmpleadoCierreId;
             await _sesionRepository.ActualizarAsync(sesion);
 
@@ -120,26 +123,53 @@ namespace Billar306.Aplicacion.Services
             return (true, null, false);
         }
 
+        private async Task<SesionMesaDto> MapearADtoAsync(SesionMesa s)
+        {
+            decimal montoMesaActual;
+
+            if (s.FechaFin is not null)
+            {
+                montoMesaActual = s.MontoSesionMesa; 
+            }
+            else
+            {
+                var tarifa = await _configRepository.ObtenerPorClaveAsync(TipoParametro.TarifaHoraMesa);
+                var horas = (decimal)(DateTime.UtcNow - s.FechaInicio).TotalHours;
+                montoMesaActual = tarifa is null ? 0 : Math.Round(horas * tarifa.Valor, 2);
+            }
+
+            var confiteriaTotal = s.Total - s.MontoSesionMesa; 
+            var totalActual = montoMesaActual + confiteriaTotal;
+
+            return new SesionMesaDto(
+                s.Id, s.MesaId, s.ClienteId, s.TurnoId, s.EmpleadoAperturaId, s.EmpleadoCierreId,
+                s.FechaInicio, s.FechaFin, s.MontoSesionMesa, s.Total,
+                montoMesaActual, totalActual
+            );
+        }
+
         public async Task<List<SesionMesaDto>> ObtenerTodasAsync()
         {
             var sesiones = await _sesionRepository.ObtenerTodosAsync();
-            return sesiones.Select(MapearADto).ToList();
+            var resultado = new List<SesionMesaDto>();
+            foreach (var s in sesiones) resultado.Add(await MapearADtoAsync(s));
+            return resultado;
         }
 
         public async Task<List<SesionMesaDto>> ObtenerAbiertasAsync()
         {
             var sesiones = await _sesionRepository.ObtenerAbiertasAsync();
-            return sesiones.Select(MapearADto).ToList();
+            var resultado = new List<SesionMesaDto>();
+            foreach (var s in sesiones) resultado.Add(await MapearADtoAsync(s));
+            return resultado;
         }
 
         public async Task<SesionMesaDto?> ObtenerPorIdAsync(int id)
         {
             var sesion = await _sesionRepository.ObtenerPorIdAsync(id);
-            return sesion is null ? null : MapearADto(sesion);
+            return sesion is null ? null : await MapearADtoAsync(sesion);
         }
 
-        private static SesionMesaDto MapearADto(SesionMesa s)
-            => new(s.Id, s.MesaId, s.ClienteId, s.TurnoId, s.EmpleadoAperturaId, s.EmpleadoCierreId,
-                   s.FechaInicio, s.FechaFin, s.MontoSesionMesa, s.Total);
+
     }
 }

@@ -73,6 +73,11 @@ namespace Billar306.API
             builder.Services.AddScoped<IMesaRepository, MesaRepository>();
             builder.Services.AddScoped<ISesionMesaRepository, SesionMesaRepository>();
             builder.Services.AddScoped<IConfiguracionSistemaRepository, ConfiguracionSistemaRepository>();
+            builder.Services.AddScoped<ICatalogoRepository, CatalogoRepository>();
+            builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+            builder.Services.AddScoped<IVentaConfiteriaRepository, VentaConfiteriaRepository>();
+            builder.Services.AddScoped<IItemConfiteriaRepository, ItemConfiteriaRepository>();
+            builder.Services.AddScoped<ICuentaBaseRepository, CuentaBaseRepository>();
 
             // Services
             builder.Services.AddScoped<ClienteService>();
@@ -82,6 +87,9 @@ namespace Billar306.API
             builder.Services.AddScoped<MesaService>();
             builder.Services.AddScoped<SesionMesaService>();
             builder.Services.AddScoped<ConfiguracionSistemaService>();
+            builder.Services.AddScoped<CatalogoService>();
+            builder.Services.AddScoped<ProductoService>();
+            builder.Services.AddScoped<ConfiteriaService>();
 
             var app = builder.Build();
 

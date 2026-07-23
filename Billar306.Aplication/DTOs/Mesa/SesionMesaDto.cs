@@ -4,6 +4,7 @@
         int Id, int MesaId, int ClienteId, int TurnoId,
         int EmpleadoAperturaId, int? EmpleadoCierreId,
         DateTime FechaInicio, DateTime? FechaFin,
-        decimal MontoSesionMesa, decimal Total
+        decimal MontoSesionMesa, decimal Total,
+        decimal MontoMesaActual, decimal TotalActual
     );
 }
