@@ -13,5 +13,8 @@ namespace Billar306.Persistencia.Repositories
 
         public async Task<CuentaBase?> ObtenerPorVentaConfiteriaIdAsync(int ventaConfiteriaId)
             => await _dbSet.FirstOrDefaultAsync(c => c.VentaConfiteriaId == ventaConfiteriaId);
+
+        public async Task<IEnumerable<CuentaBase>> ObtenerPorTurnoAsync(int turnoId)
+            => await _dbSet.Where(c => c.TurnoId == turnoId).ToListAsync();
     }
 }
