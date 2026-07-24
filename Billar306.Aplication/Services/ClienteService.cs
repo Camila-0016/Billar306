@@ -31,15 +31,14 @@ namespace Billar306.Aplicacion.Services
             return clientes.Select(MapearADto).ToList();
         }
 
-        public async Task<ClienteDto> AgregarAsync(CrearClienteDto dto)
+        public async Task<(bool Exito, string? Error, ClienteDto? Cliente)> AgregarAsync(CrearClienteDto dto)
         {
-            var nuevoCliente = new Cliente
-            {
-                NombreCompleto = dto.NombreCompleto
-            };
+            if (await _clienteRepository.BuscarExactoAsync(dto.NombreCompleto) is not null)
+                return (false, "Ya existe un cliente con ese nombre.", null);
 
+            var nuevoCliente = new Cliente { NombreCompleto = dto.NombreCompleto };
             await _clienteRepository.AgregarAsync(nuevoCliente);
-            return MapearADto(nuevoCliente);
+            return (true, null, MapearADto(nuevoCliente));
         }
 
         public async Task<bool> ActualizarAsync(int id, ActualizarClienteDto dto)

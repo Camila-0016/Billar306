@@ -18,5 +18,8 @@ namespace Billar306.Persistencia.Repositories
                 .Where(c => c.NombreCompleto.ToLower().Contains(nombre.ToLower()))
                 .ToListAsync();
         }
+
+        public async Task<Cliente?> BuscarExactoAsync(string nombre)
+            => await _dbSet.FirstOrDefaultAsync(c => c.NombreCompleto.ToLower() == nombre.ToLower());
     }
 }

@@ -56,9 +56,17 @@ namespace Billar306.Aplicacion.Services
             }
             else
             {
-                var nuevoCliente = new Cliente { NombreCompleto = dto.NombreClienteNuevo! };
-                await _clienteRepository.AgregarAsync(nuevoCliente);
-                clienteIdFinal = nuevoCliente.Id;
+                var existente = await _clienteRepository.BuscarExactoAsync(dto.NombreClienteNuevo!);
+                if (existente is not null)
+                {
+                    clienteIdFinal = existente.Id;
+                }
+                else
+                {
+                    var nuevoCliente = new Cliente { NombreCompleto = dto.NombreClienteNuevo! };
+                    await _clienteRepository.AgregarAsync(nuevoCliente);
+                    clienteIdFinal = nuevoCliente.Id;
+                }
             }
 
             var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync();
@@ -144,7 +152,7 @@ namespace Billar306.Aplicacion.Services
             return new SesionMesaDto(
                 s.Id, s.MesaId, s.ClienteId, s.TurnoId, s.EmpleadoAperturaId, s.EmpleadoCierreId,
                 s.FechaInicio, s.FechaFin, s.MontoSesionMesa, s.Total,
-                montoMesaActual, totalActual
+                montoMesaActual, totalActual, s.VentaConfiteriaId
             );
         }
 

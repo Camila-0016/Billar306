@@ -42,8 +42,9 @@ namespace Billar306.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ClienteDto>> Crear([FromBody] CrearClienteDto dto)
         {
-            var nuevoCliente = await _clienteService.AgregarAsync(dto);
-            return CreatedAtAction(nameof(ObtenerPorId), new { id = nuevoCliente.Id }, nuevoCliente);
+            var (exito, error, nuevoCliente) = await _clienteService.AgregarAsync(dto);
+            if (!exito) return Conflict(new { mensaje = error });
+            return CreatedAtAction(nameof(ObtenerPorId), new { id = nuevoCliente!.Id }, nuevoCliente);
         }
 
         [HttpPut("{id}")]

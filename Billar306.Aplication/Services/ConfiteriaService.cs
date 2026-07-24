@@ -55,9 +55,17 @@ namespace Billar306.Aplicacion.Services
             }
             else
             {
-                var nuevoCliente = new Cliente { NombreCompleto = dto.NombreClienteNuevo! };
-                await _clienteRepository.AgregarAsync(nuevoCliente);
-                clienteIdFinal = nuevoCliente.Id;
+                var existente = await _clienteRepository.BuscarExactoAsync(dto.NombreClienteNuevo!);
+                if (existente is not null)
+                {
+                    clienteIdFinal = existente.Id;
+                }
+                else
+                {
+                    var nuevoCliente = new Cliente { NombreCompleto = dto.NombreClienteNuevo! };
+                    await _clienteRepository.AgregarAsync(nuevoCliente);
+                    clienteIdFinal = nuevoCliente.Id;
+                }
             }
 
             var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync();
@@ -200,7 +208,7 @@ namespace Billar306.Aplicacion.Services
             return new VentaConfiteriaDto(
                 venta.Id, venta.Total,
                 venta.ItemsConfiterias
-                    .Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total))
+                    .Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total, i.FechaInicio))
                     .ToList()
             );
         }
@@ -209,14 +217,14 @@ namespace Billar306.Aplicacion.Services
             var ventas = await _ventaRepository.ObtenerTodasConItemsAsync();
             return ventas.Select(v => new VentaConfiteriaDto(
                 v.Id, v.Total,
-                v.ItemsConfiterias.Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total)).ToList()
+                v.ItemsConfiterias.Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total, i.FechaInicio)).ToList()
             )).ToList();
         }
 
-        private readonly Dictionary<int, IRepository<ItemConfiteria>> _cacheNoUsado = new(); // placeholder eliminado abajo
+        private readonly Dictionary<int, IRepository<ItemConfiteria>> _cacheNoUsado = new(); 
 
         private static VentaConfiteriaDto MapearADto(VentaConfiteria v, List<ItemConfiteria> items)
             => new(v.Id, v.Total,
-                items.Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total)).ToList());
+                items.Select(i => new ItemConfiteriaDto(i.Id, i.ProductoId, i.Nombre, i.Cantidad, i.PrecioUnitario, i.Total, i.FechaInicio)).ToList());
     }
 }

@@ -5,6 +5,7 @@
         int EmpleadoAperturaId, int? EmpleadoCierreId,
         DateTime FechaInicio, DateTime? FechaFin,
         decimal MontoSesionMesa, decimal Total,
-        decimal MontoMesaActual, decimal TotalActual
+        decimal MontoMesaActual, decimal TotalActual,
+        int? VentaConfiteriaId
     );
 }
