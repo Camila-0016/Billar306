@@ -13,19 +13,23 @@ namespace Billar306.Aplicacion.Services
         private readonly ICuentaBaseRepository _cuentaRepository;
         private readonly IMesaRepository _mesaRepository;
         private readonly IClienteRepository _clienteRepository;
+        private readonly IVentaConfiteriaRepository _ventaRepository;
+
 
         public ReportesService(
             ITurnoRepository turnoRepository,
             IRegistroTurnoEmpleadoRepository registroRepository,
             ICuentaBaseRepository cuentaRepository,
             IMesaRepository mesaRepository,
-            IClienteRepository clienteRepository)
+            IClienteRepository clienteRepository,
+            IVentaConfiteriaRepository ventaRepository)
         {
             _turnoRepository = turnoRepository;
             _registroRepository = registroRepository;
             _cuentaRepository = cuentaRepository;
             _mesaRepository = mesaRepository;
             _clienteRepository = clienteRepository;
+            _ventaRepository = ventaRepository;
         }
 
         public async Task<TurnoReporteDto?> ObtenerDetalleTurnoAsync(int turnoId)
@@ -56,10 +60,30 @@ namespace Billar306.Aplicacion.Services
                 var cliente = await _clienteRepository.ObtenerPorIdAsync(cuenta.ClienteId);
                 ventasDirectas.Add(new VentaDirectaDelTurnoDto(cuenta.Id, cliente?.NombreCompleto ?? "—", cuenta.Total));
             }
+            var productosVendidos = new Dictionary<int, (string Nombre, int Cantidad)>();
+
+            foreach (var cuenta in cuentas.Where(c => c.VentaConfiteriaId is not null))
+            {
+                var venta = await _ventaRepository.ObtenerConItemsAsync(cuenta.VentaConfiteriaId!.Value);
+                if (venta is null) continue;
+
+                foreach (var item in venta.ItemsConfiterias)
+                {
+                    if (productosVendidos.TryGetValue(item.ProductoId, out var actual))
+                        productosVendidos[item.ProductoId] = (item.Nombre, actual.Cantidad + item.Cantidad);
+                    else
+                        productosVendidos[item.ProductoId] = (item.Nombre, item.Cantidad);
+                }
+            }
+
+            var productosDto = productosVendidos
+                .Select(kvp => new ProductoVendidoDto(kvp.Key, kvp.Value.Nombre, kvp.Value.Cantidad))
+                .OrderByDescending(p => p.CantidadTotal)
+                .ToList();
 
             return new TurnoReporteDto(
                 turno.Id, turno.TitularId, turno.AuxiliarId, turno.FechaInicio, turno.Salida,
-                horasDto, mesas, ventasDirectas);
+                horasDto, mesas, ventasDirectas, productosDto);
         }
     }
 }
