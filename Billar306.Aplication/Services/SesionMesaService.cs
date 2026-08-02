@@ -34,16 +34,14 @@ namespace Billar306.Aplicacion.Services
             _usuarioRepository = usuarioRepository;
         }
 
-        public async Task<(bool Exito, string? Error, bool NoEncontrado, SesionMesaDto? Sesion)> AbrirAsync(AbrirSesionMesaDto dto)
+        public async Task<(bool Exito, string? Error, bool NoEncontrado, SesionMesaDto? Sesion)> AbrirAsync(AbrirSesionMesaDto dto, int empleadoAperturaId)
         {
             var mesa = await _mesaRepository.ObtenerPorIdAsync(dto.MesaId);
             if (mesa is null) return (false, "Mesa no encontrada.", true, null);
             if (mesa.Ocupada) return (false, "La mesa ya está ocupada.", false, null);
 
-            // Lógica para determinar si se usa un cliente existente o se crea uno nuevo
             var tieneClienteExistente = dto.ClienteId is not null;
             var tieneClienteNuevo = !string.IsNullOrWhiteSpace(dto.NombreClienteNuevo);
-
             if (tieneClienteExistente == tieneClienteNuevo)
                 return (false, "Debe indicar exactamente uno: un cliente existente o el nombre de un cliente nuevo.", false, null);
 
@@ -73,29 +71,27 @@ namespace Billar306.Aplicacion.Services
             if (turno is null)
                 return (false, "No hay un turno abierto.", false, null);
 
-            if (await _registroRepository.ObtenerAbiertoAsync(turno.Id, dto.EmpleadoAperturaId) is null)
-                return (false, "El empleado indicado no está activo en el turno actual.", false, null);
+            if (await _registroRepository.ObtenerAbiertoAsync(turno.Id, empleadoAperturaId) is null)
+                return (false, "No estás activo en el turno actual.", false, null);
 
-            // Apertura de la sesión
             var sesion = new SesionMesa
             {
                 MesaId = dto.MesaId,
-                ClienteId = clienteIdFinal, 
+                ClienteId = clienteIdFinal,
                 TurnoId = turno.Id,
-                EmpleadoAperturaId = dto.EmpleadoAperturaId,
+                EmpleadoAperturaId = empleadoAperturaId,
                 Total = 0,
                 MontoSesionMesa = 0
             };
             await _sesionRepository.AgregarAsync(sesion);
 
-            // Actualización del estado de la mesa
             mesa.Ocupada = true;
             await _mesaRepository.ActualizarAsync(mesa);
 
             return (true, null, false, await MapearADtoAsync(sesion));
         }
 
-        public async Task<(bool Exito, string? Error, bool NoEncontrado)> CerrarAsync(int sesionId, CerrarSesionMesaDto dto)
+        public async Task<(bool Exito, string? Error, bool NoEncontrado)> CerrarAsync(int sesionId, int empleadoCierreId)
         {
             var sesion = await _sesionRepository.ObtenerPorIdAsync(sesionId);
             if (sesion is null) return (false, "Sesión no encontrada.", true);
@@ -104,21 +100,23 @@ namespace Billar306.Aplicacion.Services
             var turnoActual = await _turnoRepository.ObtenerTurnoAbiertoAsync();
             if (turnoActual is null) return (false, "No hay un turno abierto.", false);
 
-            if (await _registroRepository.ObtenerAbiertoAsync(turnoActual.Id, dto.EmpleadoCierreId) is null)
-                return (false, "El empleado indicado no está activo en el turno actual.", false);
+            if (await _registroRepository.ObtenerAbiertoAsync(turnoActual.Id, empleadoCierreId) is null)
+                return (false, "No estás activo en el turno actual.", false);
 
             var tarifa = await _configRepository.ObtenerPorClaveAsync(TipoParametro.TarifaHoraMesa);
             if (tarifa is null)
                 return (false, "No hay tarifa de hora de mesa configurada. El Jefe debe configurarla primero.", false);
 
+            var confiteriaTotal = sesion.Total - sesion.MontoSesionMesa;
+
             var ahora = DateTime.UtcNow;
             var horas = (decimal)(ahora - sesion.FechaInicio).TotalHours;
-            var monto = Math.Round(horas * tarifa.Valor, 2);
+            var montoMesa = Math.Round(horas * tarifa.Valor, 2);
 
             sesion.FechaFin = ahora;
-            sesion.MontoSesionMesa = monto;
-            sesion.Total = monto; 
-            sesion.EmpleadoCierreId = dto.EmpleadoCierreId;
+            sesion.MontoSesionMesa = montoMesa;
+            sesion.Total = montoMesa + confiteriaTotal;
+            sesion.EmpleadoCierreId = empleadoCierreId;
             await _sesionRepository.ActualizarAsync(sesion);
 
             var mesa = await _mesaRepository.ObtenerPorIdAsync(sesion.MesaId);

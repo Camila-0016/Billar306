@@ -1,5 +1,4 @@
-﻿
-namespace Billar306.Aplicacion.DTOs.Turnos
+﻿namespace Billar306.Aplicacion.DTOs.Turnos
 {
-    public record CrearTurnoDto(int TitularId);
+    public record CrearTurnoDto();
 }

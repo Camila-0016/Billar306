@@ -1,11 +1,14 @@
-﻿using Billar306.Aplicacion.DTOs.Confiteria;
+﻿using Billar306.API.Extensions;
+using Billar306.Aplicacion.DTOs.Confiteria;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/confiteria")]
     [ApiController]
+    [Authorize]
     public class ConfiteriaController : ControllerBase
     {
         private readonly ConfiteriaService _confiteriaService;
@@ -18,7 +21,7 @@ namespace Billar306.API.Controllers
         [HttpPost("venta-directa")]
         public async Task<ActionResult<VentaConfiteriaDto>> VentaDirecta([FromBody] CrearVentaDirectaDto dto)
         {
-            var (exito, error, venta) = await _confiteriaService.CrearVentaDirectaAsync(dto);
+            var (exito, error, venta) = await _confiteriaService.CrearVentaDirectaAsync(dto, this.UsuarioIdActual());
             if (!exito) return Conflict(new { mensaje = error });
             return Ok(venta);
         }
@@ -26,12 +29,12 @@ namespace Billar306.API.Controllers
         [HttpPost("mesa/{sesionMesaId}")]
         public async Task<ActionResult<VentaConfiteriaDto>> AgregarAMesa(int sesionMesaId, [FromBody] AgregarConsumicionMesaDto dto)
         {
-            var (exito, error, noEncontrado, venta) = await _confiteriaService.AgregarAMesaAsync(sesionMesaId, dto);
+            var (exito, error, noEncontrado, venta) = await _confiteriaService.AgregarAMesaAsync(sesionMesaId, dto, this.UsuarioIdActual());
             if (!exito)
                 return noEncontrado ? NotFound(new { mensaje = error }) : Conflict(new { mensaje = error });
             return Ok(venta);
         }
-        
+
         [HttpDelete("items/{itemId}")]
         public async Task<IActionResult> QuitarItem(int itemId)
         {
@@ -39,6 +42,7 @@ namespace Billar306.API.Controllers
             if (!exito) return Conflict(new { mensaje = error });
             return NoContent();
         }
+
         [HttpGet("venta/{id}")]
         public async Task<ActionResult<VentaConfiteriaDto>> ObtenerVenta(int id)
         {
@@ -46,8 +50,9 @@ namespace Billar306.API.Controllers
             if (venta is null) return NotFound(new { mensaje = "Venta no encontrada" });
             return Ok(venta);
         }
+
         [HttpGet("ventas")]
         public async Task<ActionResult<List<VentaConfiteriaDto>>> ObtenerTodas()
-    => Ok(await _confiteriaService.ObtenerTodasAsync());
+            => Ok(await _confiteriaService.ObtenerTodasAsync());
     }
 }

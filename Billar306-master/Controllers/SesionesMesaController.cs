@@ -1,11 +1,14 @@
-﻿using Billar306.Aplicacion.DTOs.Mesas;
+﻿using Billar306.API.Extensions;
+using Billar306.Aplicacion.DTOs.Mesas;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SesionesMesaController : ControllerBase
     {
         private readonly SesionMesaService _sesionMesaService;
@@ -34,21 +37,19 @@ namespace Billar306.API.Controllers
         [HttpPost("abrir")]
         public async Task<ActionResult<SesionMesaDto>> Abrir([FromBody] AbrirSesionMesaDto dto)
         {
-            var (exito, error, noEncontrado, sesion) = await _sesionMesaService.AbrirAsync(dto);
+            var (exito, error, noEncontrado, sesion) = await _sesionMesaService.AbrirAsync(dto, this.UsuarioIdActual());
             if (!exito)
                 return noEncontrado ? NotFound(new { mensaje = error }) : Conflict(new { mensaje = error });
             return CreatedAtAction(nameof(ObtenerPorId), new { id = sesion!.Id }, sesion);
         }
 
         [HttpPost("{id}/cerrar")]
-        public async Task<ActionResult<SesionMesaDto>> Cerrar(int id, [FromBody] CerrarSesionMesaDto dto)
+        public async Task<IActionResult> Cerrar(int id)
         {
-            var (exito, error, noEncontrado) = await _sesionMesaService.CerrarAsync(id, dto);
+            var (exito, error, noEncontrado) = await _sesionMesaService.CerrarAsync(id, this.UsuarioIdActual());
             if (!exito)
                 return noEncontrado ? NotFound(new { mensaje = error }) : Conflict(new { mensaje = error });
-
-            var sesionCerrada = await _sesionMesaService.ObtenerPorIdAsync(id);
-            return Ok(sesionCerrada);
+            return NoContent();
         }
     }
 }

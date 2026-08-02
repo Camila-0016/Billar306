@@ -122,6 +122,7 @@ namespace Billar306.API
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<ReportesService>();
             builder.Services.AddScoped<SalidaService>();
+            builder.Services.AddScoped<CuentaService>();
 
             var app = builder.Build();
 

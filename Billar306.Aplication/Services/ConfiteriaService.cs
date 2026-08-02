@@ -39,7 +39,7 @@ namespace Billar306.Aplicacion.Services
 
         // ---------- Venta directa (sin mesa) ----------
 
-        public async Task<(bool Exito, string? Error, VentaConfiteriaDto? Venta)> CrearVentaDirectaAsync(CrearVentaDirectaDto dto)
+        public async Task<(bool Exito, string? Error, VentaConfiteriaDto? Venta)> CrearVentaDirectaAsync(CrearVentaDirectaDto dto, int empleadoId)
         {
             var tieneClienteExistente = dto.ClienteId is not null;
             var tieneClienteNuevo = !string.IsNullOrWhiteSpace(dto.NombreClienteNuevo);
@@ -71,8 +71,8 @@ namespace Billar306.Aplicacion.Services
             var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync();
             if (turno is null) return (false, "No hay un turno abierto.", null);
 
-            if (await _registroRepository.ObtenerAbiertoAsync(turno.Id, dto.EmpleadoId) is null)
-                return (false, "El empleado indicado no está activo en el turno actual.", null);
+            if (await _registroRepository.ObtenerAbiertoAsync(turno.Id, empleadoId) is null)
+                return (false, "No estás activo en el turno actual.", null);
 
             var (items, total, error) = await ArmarItemsAsync(dto.Items);
             if (error is not null) return (false, error, null);
@@ -90,7 +90,7 @@ namespace Billar306.Aplicacion.Services
             {
                 ClienteId = clienteIdFinal,
                 TurnoId = turno.Id,
-                EmpleadoAperturaId = dto.EmpleadoId,
+                EmpleadoAperturaId = empleadoId,
                 VentaConfiteriaId = venta.Id,
                 Total = venta.Total
             };
@@ -126,7 +126,7 @@ namespace Billar306.Aplicacion.Services
 
         // ---------- Agregar consumición a una mesa ya abierta ----------
 
-        public async Task<(bool Exito, string? Error, bool NoEncontrado, VentaConfiteriaDto? Venta)> AgregarAMesaAsync(int sesionMesaId, AgregarConsumicionMesaDto dto)
+        public async Task<(bool Exito, string? Error, bool NoEncontrado, VentaConfiteriaDto? Venta)> AgregarAMesaAsync(int sesionMesaId, AgregarConsumicionMesaDto dto, int empleadoId)
         {
             var sesion = await _sesionMesaRepository.ObtenerPorIdAsync(sesionMesaId);
             if (sesion is null) return (false, "Sesión de mesa no encontrada.", true, null);
@@ -135,8 +135,8 @@ namespace Billar306.Aplicacion.Services
             var turnoActual = await _turnoRepository.ObtenerTurnoAbiertoAsync();
             if (turnoActual is null) return (false, "No hay un turno abierto.", false, null);
 
-            if (await _registroRepository.ObtenerAbiertoAsync(turnoActual.Id, dto.EmpleadoId) is null)
-                return (false, "El empleado indicado no está activo en el turno actual.", false, null);
+            if (await _registroRepository.ObtenerAbiertoAsync(turnoActual.Id, empleadoId) is null)
+                return (false, "No estás activo en el turno actual.", false, null);
 
             var (nuevosItems, totalNuevo, error) = await ArmarItemsAsync(dto.Items);
             if (error is not null) return (false, error, false, null);
@@ -146,7 +146,6 @@ namespace Billar306.Aplicacion.Services
             {
                 venta = new VentaConfiteria { Total = totalNuevo };
                 await _ventaRepository.AgregarAsync(venta);
-
                 sesion.VentaConfiteriaId = venta.Id;
             }
             else
@@ -162,7 +161,7 @@ namespace Billar306.Aplicacion.Services
                 await _itemRepository.AgregarAsync(item);
             }
 
-            sesion.Total = sesion.MontoSesionMesa + venta.Total; // Recalcula el total de la cuenta completa
+            sesion.Total = sesion.MontoSesionMesa + venta.Total;
             await _sesionMesaRepository.ActualizarAsync(sesion);
 
             var ventaCompleta = await _ventaRepository.ObtenerConItemsAsync(venta.Id);

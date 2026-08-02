@@ -1,11 +1,14 @@
-﻿using Billar306.Aplicacion.DTOs.Turnos;
+﻿using Billar306.API.Extensions;
+using Billar306.Aplicacion.DTOs.Turnos;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TurnosController : ControllerBase
     {
         private readonly TurnoService _turnoService;
@@ -28,9 +31,9 @@ namespace Billar306.API.Controllers
         }
 
         [HttpPost("abrir")]
-        public async Task<ActionResult<TurnoDto>> Abrir([FromBody] CrearTurnoDto dto)
+        public async Task<ActionResult<TurnoDto>> Abrir()
         {
-            var (exito, error, _, turno) = await _turnoService.AbrirAsync(dto);
+            var (exito, error, turno) = await _turnoService.AbrirAsync(this.UsuarioIdActual());
             if (!exito) return Conflict(new { mensaje = error });
             return CreatedAtAction(nameof(ObtenerPorId), new { id = turno!.Id }, turno);
         }
@@ -38,11 +41,9 @@ namespace Billar306.API.Controllers
         [HttpPost("{id}/auxiliar")]
         public async Task<IActionResult> AsignarAuxiliar(int id, [FromBody] AsignarAuxiliarDto dto)
         {
-            var (exito, error, noEncontrado) = await _turnoService.AsignarAuxiliarAsync(id, dto);
+            var (exito, error, noEncontrado) = await _turnoService.AsignarAuxiliarAsync(id, dto, this.UsuarioIdActual());
             if (!exito)
-                return noEncontrado
-                    ? NotFound(new { mensaje = error })
-                    : Conflict(new { mensaje = error });
+                return noEncontrado ? NotFound(new { mensaje = error }) : Conflict(new { mensaje = error });
             return NoContent();
         }
 

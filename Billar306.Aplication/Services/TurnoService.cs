@@ -24,22 +24,19 @@ namespace Billar306.Aplicacion.Services
             _usuarioRepository = usuarioRepository;
         }
 
-        public async Task<(bool Exito, string? Error, bool NoEncontrado, TurnoDto? Turno)> AbrirAsync(CrearTurnoDto dto)
+        public async Task<(bool Exito, string? Error, TurnoDto? Turno)> AbrirAsync(int titularId)
         {
             if (await _turnoRepository.ObtenerTurnoAbiertoAsync() is not null)
-                return (false, "Ya hay un turno abierto. Debe cerrarse antes de abrir uno nuevo.", false, null);
-
-            if (await _usuarioRepository.ObtenerPorIdAsync(dto.TitularId) is null)
-                return (false, "El titular indicado no existe.", false, null);
+                return (false, "Ya hay un turno abierto. Debe cerrarse antes de abrir uno nuevo.", null);
 
             var diaLaboral = await _diaLaboralRepository.ObtenerAbiertoActualAsync();
             if (diaLaboral is null)
-                return (false, "No hay un día laboral abierto. Debe abrirse antes de iniciar un turno.", false, null);
+                return (false, "No hay un día laboral abierto. Debe abrirse antes de iniciar un turno.", null);
 
             var turno = new Turno
             {
                 DiaLaboralId = diaLaboral.Id,
-                TitularId = dto.TitularId,
+                TitularId = titularId,
                 TotalMaquinas = 0
             };
             await _turnoRepository.AgregarAsync(turno);
@@ -47,28 +44,33 @@ namespace Billar306.Aplicacion.Services
             await _registroRepository.AgregarAsync(new RegistroTurnoEmpleado
             {
                 TurnoId = turno.Id,
-                EmpleadoId = dto.TitularId
+                EmpleadoId = titularId
             });
 
-            return (true, null, false, MapearADto(turno));
+            return (true, null, MapearADto(turno));
         }
 
-        public async Task<(bool Exito, string? Error, bool NoEncontrado)> AsignarAuxiliarAsync(int turnoId, AsignarAuxiliarDto dto)
+        public async Task<(bool Exito, string? Error, bool NoEncontrado)> AsignarAuxiliarAsync(int turnoId, AsignarAuxiliarDto dto, int empleadoIdQueLlama)
         {
             var turno = await _turnoRepository.ObtenerPorIdAsync(turnoId);
             if (turno is null) return (false, "Turno no encontrado.", true);
+            if (turno.Salida is not null) return (false, "El turno ya está cerrado.", false);
 
-            if (turno.Salida is not null)
-                return (false, "El turno ya está cerrado.", false);
+            if (turno.TitularId != empleadoIdQueLlama)
+                return (false, "Solo el titular puede asignar auxiliares.", false);
 
             if (dto.AuxiliarId == turno.TitularId)
                 return (false, "El auxiliar no puede ser la misma persona que el titular.", false);
 
+            if (turno.AuxiliarId is not null)
+            {
+                var registroPrevio = await _registroRepository.ObtenerAbiertoAsync(turnoId, turno.AuxiliarId.Value);
+                if (registroPrevio is not null)
+                    return (false, "Ya hay un auxiliar activo en este turno.", false);
+            }
+
             if (await _usuarioRepository.ObtenerPorIdAsync(dto.AuxiliarId) is null)
                 return (false, "El auxiliar indicado no existe.", false);
-
-            if (await _registroRepository.ObtenerAbiertoAsync(turnoId, dto.AuxiliarId) is not null)
-                return (false, "Este empleado ya está activo en el turno.", false);
 
             turno.AuxiliarId = dto.AuxiliarId;
             await _turnoRepository.ActualizarAsync(turno);

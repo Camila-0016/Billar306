@@ -39,12 +39,12 @@ namespace Billar306.Aplicacion.Services
             return (true, null, new EstadoSalidaDto(turno.Id, esUnico, mesasAbiertas.Any()));
         }
 
-        public async Task<(bool Exito, string? Error, string? Aviso)> ConfirmarSalidaAsync(ConfirmarSalidaDto dto)
+        public async Task<(bool Exito, string? Error, string? Aviso)> ConfirmarSalidaAsync(int empleadoId, bool cerrarDiaLaboral)
         {
             var turno = await _turnoRepository.ObtenerTurnoAbiertoAsync();
             if (turno is null) return (false, "No hay un turno abierto.", null);
 
-            var miRegistro = await _registroRepository.ObtenerAbiertoAsync(turno.Id, dto.EmpleadoId);
+            var miRegistro = await _registroRepository.ObtenerAbiertoAsync(turno.Id, empleadoId);
             if (miRegistro is null) return (false, "No estás activo en el turno actual.", null);
 
             var activos = (await _registroRepository.ObtenerAbiertosPorTurnoAsync(turno.Id)).ToList();
@@ -59,7 +59,6 @@ namespace Billar306.Aplicacion.Services
                 return (true, null, null);
             }
 
-            // Es el único activo: se cierra el turno completo
             turno.Salida = ahora;
             await _turnoRepository.ActualizarAsync(turno);
 
@@ -68,7 +67,7 @@ namespace Billar306.Aplicacion.Services
             await _registroRepository.ActualizarAsync(miRegistro);
 
             string? aviso = null;
-            if (dto.CerrarDiaLaboral)
+            if (cerrarDiaLaboral)
             {
                 var mesasAbiertas = await _sesionMesaRepository.ObtenerAbiertasAsync();
                 if (mesasAbiertas.Any())
