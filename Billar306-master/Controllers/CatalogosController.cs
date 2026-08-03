@@ -1,11 +1,13 @@
 ﻿using Billar306.Aplicacion.DTOs.Confiteria;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CatalogosController : ControllerBase
     {
         private readonly CatalogoService _catalogoService;
@@ -27,6 +29,7 @@ namespace Billar306.API.Controllers
             return Ok(catalogo);
         }
 
+        [Authorize(Roles = "Jefe")]
         [HttpPost]
         public async Task<ActionResult<CatalogoDto>> Crear([FromBody] CrearCatalogoDto dto)
         {

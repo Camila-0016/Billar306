@@ -1,12 +1,14 @@
 ﻿using Billar306.Aplicacion.DTOs.Configuraciones;
 using Billar306.Aplicacion.Services;
 using Billar306.Dominio.Models.Control;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Jefe")]
     public class ConfiguracionesController : ControllerBase
     {
         private readonly ConfiguracionSistemaService _configService;

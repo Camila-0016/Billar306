@@ -1,11 +1,13 @@
 ﻿using Billar306.Aplicacion.DTOs.Mesas;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MesasController : ControllerBase
     {
         private readonly MesaService _mesaService;

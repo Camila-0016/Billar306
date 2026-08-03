@@ -1,11 +1,13 @@
 ﻿using Billar306.Aplicacion.DTOs.Usuarios;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsuariosController : ControllerBase
     {
         private readonly UsuarioService _usuarioService;
@@ -30,6 +32,7 @@ namespace Billar306.API.Controllers
             return Ok(usuario);
         }
 
+        [Authorize(Roles = "Jefe")]
         [HttpPost]
         public async Task<ActionResult<UsuarioDto>> Crear([FromBody] CrearUsuarioDto dto)
         {
@@ -38,6 +41,7 @@ namespace Billar306.API.Controllers
             return CreatedAtAction(nameof(ObtenerPorId), new { id = usuario!.Id }, usuario);
         }
 
+        [Authorize(Roles = "Jefe")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Actualizar(int id, [FromBody] ActualizarUsuarioDto dto)
         {

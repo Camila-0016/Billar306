@@ -1,11 +1,13 @@
 ﻿using Billar306.Aplicacion.DTOs.Confiteria;
 using Billar306.Aplicacion.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Billar306.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductosController : ControllerBase
     {
         private readonly ProductoService _productoService;
@@ -31,6 +33,7 @@ namespace Billar306.API.Controllers
             return Ok(producto);
         }
 
+        [Authorize(Roles = "Jefe")]
         [HttpPost]
         public async Task<ActionResult<ProductoDto>> Crear([FromBody] CrearProductoDto dto)
         {
@@ -39,6 +42,7 @@ namespace Billar306.API.Controllers
             return CreatedAtAction(nameof(ObtenerPorId), new { id = producto!.Id }, producto);
         }
 
+        [Authorize(Roles = "Jefe")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Actualizar(int id, [FromBody] ActualizarProductoDto dto)
         {
