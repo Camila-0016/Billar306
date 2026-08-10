@@ -11,5 +11,14 @@ namespace Billar306.Persistencia.Repositories
 
         public async Task<Mesa?> ObtenerPorNumeroAsync(int numero)
             => await _dbSet.FirstOrDefaultAsync(m => m.Numero == numero);
+
+        public async Task<bool> IntentarOcuparAsync(int mesaId)
+        {
+            var filasAfectadas = await _context.Mesas
+                .Where(m => m.Id == mesaId && !m.Ocupada)
+                .ExecuteUpdateAsync(s => s.SetProperty(m => m.Ocupada, true));
+
+            return filasAfectadas == 1;
+        }
     }
 }

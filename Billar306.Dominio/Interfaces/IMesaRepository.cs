@@ -5,5 +5,6 @@ namespace Billar306.Dominio.Interfaces
     public interface IMesaRepository : IRepository<Mesa>
     {
         Task<Mesa?> ObtenerPorNumeroAsync(int numero);
+        Task<bool> IntentarOcuparAsync(int mesaId);
     }
 }

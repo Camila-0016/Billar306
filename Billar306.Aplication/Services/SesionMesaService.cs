@@ -85,8 +85,11 @@ namespace Billar306.Aplicacion.Services
             };
             await _sesionRepository.AgregarAsync(sesion);
 
-            mesa.Ocupada = true;
-            await _mesaRepository.ActualizarAsync(mesa);
+            //mesa.Ocupada = true;
+            //await _mesaRepository.ActualizarAsync(mesa);
+            var reservada = await _mesaRepository.IntentarOcuparAsync(dto.MesaId);
+            if (!reservada)
+                return (false, "La mesa ya está ocupada.", false, null);
 
             return (true, null, false, await MapearADtoAsync(sesion));
         }
